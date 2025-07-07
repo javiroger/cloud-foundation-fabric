@@ -18,11 +18,6 @@ locals {
   folder_id = var.folder_ids[var.stage_config.name]
 }
 
-moved {
-  from = module.apigee-project-0
-  to   = module.project
-}
-
 module "project" {
   source            = "../../../modules/project"
   billing_account   = var.billing_account.id
@@ -39,29 +34,3 @@ module "project" {
   services = var.project_services
 }
 
-module "vpc" {
-  source                          = "../../../modules/net-vpc"
-  project_id                      = module.project.project_id
-  name                            = "default"
-  mtu                             = 1500
-  delete_default_routes_on_create = true
-  factories_config = {
-    context = {
-      regions = merge(var.regions, var.factories_config.context.regions)
-    }
-    subnets_folder = var.factories_config.vpc_subnets
-  }
-  create_googleapis_routes = {
-    private    = true
-    restricted = true
-  }
-  # TODO: add variable-based customization if needed
-  routes = var.vpc_config.create_default_route != true ? {} : {
-    default = {
-      dest_range    = "0.0.0.0/0",
-      priority      = 100
-      next_hop_type = "gateway",
-      next_hop      = "default-internet-gateway"
-    }
-  }
-}
