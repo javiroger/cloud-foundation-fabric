@@ -65,18 +65,3 @@ module "vpc" {
     }
   }
 }
-
-module "addresses" {
-  source     = "../../../modules/net-address"
-  project_id = module.project.project_id
-  psc_addresses = {
-    apigee = {
-      # address          = "10.0.16.32"
-      subnet_self_link = var.subnet.self_link
-      region           = var.region
-      service_attachment = {
-        psc_service_attachment_link = module.cloudsql-instance.psc_service_attachment_link
-      }
-    }
-  }
-}
