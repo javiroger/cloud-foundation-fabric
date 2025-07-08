@@ -25,7 +25,7 @@ locals {
     }
   }
 }
-output "foo" { value = local.subnets }
+
 module "vpc" {
   source                          = "../../../modules/net-vpc"
   project_id                      = module.project.project_id

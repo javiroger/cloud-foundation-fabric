@@ -14,35 +14,13 @@
  * limitations under the License.
  */
 
-# module "apigee" {
-#   for_each = {}
-#   count    = var.apigee_configs.dev.enabled ? 1 : 0
-#   providers = {
-#     google-beta = google-beta.datares
-#   }
-#   source     = "../modules/apigee"
-#   project_id = var.apigee_projects.dev.project_id
-#   organization = {
-#     display_name = var.apigee_configs.dev.organization_name
-#     description  = var.apigee_configs.dev.organization_description
-#     runtime_type = "CLOUD"
-#     billing_type = var.apigee_billing_type
-#     # Parameters for no Data Residency
-#     analytics_region = var.apigee_configs.dev.apigee_ax_region
-#     # Parameters for Data Residency
-#     api_consumer_data_location            = var.apigee_configs.dev.api_consumer_data_location
-#     runtime_database_encryption_key_name  = try(module.kms-org-db[0].key_ids["org-db"], null)
-#     api_consumer_data_encryption_key_name = try(module.kms-org-cp[0].key_ids["org-cp"], null)
-#     control_plane_encryption_key_name     = try(module.kms-org-cd[0].key_ids["org-cd"], null)
-
-#     disable_vpc_peering = true
-#   }
-#   envgroups            = local.envgroups
-#   environments         = var.apigee_configs.dev.environments
-#   instances            = local.instances
-#   endpoint_attachments = var.endpoint_attachments
-
-#   depends_on = [
-#     google_project_service.apigee_project_services_dev
-#   ]
-# }
+module "apigee" {
+  source        = "../../../modules/apigee"
+  project_id    = module.project.project_id
+  addons_config = var.apigee_config.addons_config
+  dns_zones     = var.apigee_config.dns_zones
+  envgroups     = var.apigee_config.envgroups
+  environments  = var.apigee_config.environments
+  instances     = var.apigee_config.instances
+  organization  = var.apigee_config.organization
+}

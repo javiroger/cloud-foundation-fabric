@@ -14,6 +14,77 @@
  * limitations under the License.
  */
 
+variable "apigee_config" {
+  description = "Apigee configuration."
+  type = object({
+    addons_config = optional(object({
+      advanced_api_ops    = optional(bool, false)
+      api_security        = optional(bool, false)
+      connectors_platform = optional(bool, false)
+      integration         = optional(bool, false)
+      monetization        = optional(bool, false)
+    }))
+    dns_zones = optional(map(object({
+      domain            = string
+      description       = string
+      target_project_id = string
+      target_network_id = string
+    })), {})
+    envgroups = optional(map(list(string)), {})
+    environments = optional(map(object({
+      api_proxy_type    = optional(string)
+      description       = optional(string, "Terraform-managed")
+      display_name      = optional(string)
+      deployment_type   = optional(string)
+      envgroups         = optional(list(string), [])
+      forward_proxy_uri = optional(string)
+      iam               = optional(map(list(string)), {})
+      iam_bindings = optional(map(object({
+        role    = string
+        members = list(string)
+      })), {})
+      iam_bindings_additive = optional(map(object({
+        role   = string
+        member = string
+      })), {})
+      node_config = optional(object({
+        min_node_count = optional(number)
+        max_node_count = optional(number)
+      }))
+      type = optional(string)
+    })), {})
+    instances = optional(map(object({
+      consumer_accept_list          = optional(list(string))
+      description                   = optional(string, "Terraform-managed")
+      disk_encryption_key           = optional(string)
+      display_name                  = optional(string)
+      enable_nat                    = optional(bool, false)
+      activate_nat                  = optional(bool, false)
+      environments                  = optional(list(string), [])
+      name                          = optional(string)
+      runtime_ip_cidr_range         = optional(string)
+      troubleshooting_ip_cidr_range = optional(string)
+    })), {})
+    organization = optional(object({
+      analytics_region                 = optional(string)
+      api_consumer_data_encryption_key = optional(string)
+      api_consumer_data_location       = optional(string)
+      authorized_network               = optional(string)
+      billing_type                     = optional(string)
+      control_plane_encryption_key     = optional(string)
+      database_encryption_key          = optional(string)
+      description                      = optional(string, "Terraform-managed")
+      disable_vpc_peering              = optional(bool, true)
+      display_name                     = optional(string)
+      properties                       = optional(map(string), {})
+      runtime_type                     = optional(string, "CLOUD")
+      retention                        = optional(string)
+    }))
+  })
+  nullable = false
+  default  = {}
+}
+
 variable "factories_config" {
   description = "Configuration for resource factories."
   type = object({
