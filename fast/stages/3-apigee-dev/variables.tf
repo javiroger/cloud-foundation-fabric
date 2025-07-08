@@ -23,7 +23,7 @@ variable "apigee_config" {
       connectors_platform = optional(bool, false)
       integration         = optional(bool, false)
       monetization        = optional(bool, false)
-    }))
+    }), {})
     dns_zones = optional(map(object({
       domain            = string
       description       = string
@@ -82,7 +82,32 @@ variable "apigee_config" {
     }))
   })
   nullable = false
-  default  = {}
+  default = {
+    envgroups = {
+      apis = ["apigee.example.com"]
+    }
+    environments = {
+      test = {
+        envgroups = ["apis"]
+      }
+    }
+    instances = {
+      # TODO: interpolate regions
+      primary = {
+        environments = ["test"]
+        # regional
+        # disk_encryption_key =
+      }
+      secondary = {
+        environments = ["test"]
+      }
+    }
+    organization = {
+      # regional TBD: check
+      # database_encryption_key = xxx
+
+    }
+  }
 }
 
 variable "factories_config" {
